@@ -6,6 +6,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.oop.JFrameUtil;
 
 import java.io.Serial;
@@ -18,8 +21,12 @@ public final class ConcurrentGUI extends JFrame {
 
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConcurrentGUI.class);
     private final JLabel display = new JLabel();
 
+    /**
+     * constructor that sets all the components of the GUI and makes it visible.
+     */
     public ConcurrentGUI() {
         super();
         JFrameUtil.dimensionJFrame(this);
@@ -39,7 +46,6 @@ public final class ConcurrentGUI extends JFrame {
         stop.addActionListener(e -> agent.stopCounting());
         new Thread(agent).start();
     }
-
 
     /*
      * The counter agent is implemented as a nested class. This makes it
@@ -61,9 +67,9 @@ public final class ConcurrentGUI extends JFrame {
         private int counter;
 
         @Override
-        public void run() {
-            while (!stop){
-                if(positive){
+        public synchronized void run() {
+            while (!stop) {
+                if (positive) {
                     positiveCount();
                 } else {
                     negativeCount();
@@ -80,7 +86,7 @@ public final class ConcurrentGUI extends JFrame {
                     this.counter--;
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {
-                    System.out.println(ex.getMessage());
+                    LOGGER.error(ex.getMessage(), ex);
                 }
             }
         }
@@ -94,7 +100,7 @@ public final class ConcurrentGUI extends JFrame {
                     this.counter++;
                     Thread.sleep(100);
                 } catch (InvocationTargetException | InterruptedException ex) {
-                    System.out.println(ex.getMessage());
+                    LOGGER.error(ex.getMessage(), ex);
                 }
             }
         }
