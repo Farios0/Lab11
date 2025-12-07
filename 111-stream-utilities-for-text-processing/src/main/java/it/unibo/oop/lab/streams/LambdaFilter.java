@@ -7,9 +7,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -49,18 +47,17 @@ public final class LambdaFilter extends JFrame {
         CHAR_NUMBER("count char number", s -> String.valueOf(s.chars().count())),
         LINES_NUMBER("count lines number", s -> String.valueOf(s.lines().count())),
         WORD_COUNTER("return a number per word", s -> {
-            String[] words = (s.split(" "));
+            final String[] words = s.split(" ");
             for (int i = 0; i < words.length; i++) {
-                words[i] = words[i].concat(" -> " + i);    
+                words[i] = words[i].concat(" -> " + i);
             }
             return Arrays.toString(words);
         }),
         SORT_WORDS("sort word in alphabetic orders", s -> {
-            String[] result = (s.split(" "));
+            final String[] result = s.split(" ");
             Arrays.sort(result);
             return Arrays.toString(result);
         });
-        
 
         private final String commandName;
         private final Function<String, String> fun;
