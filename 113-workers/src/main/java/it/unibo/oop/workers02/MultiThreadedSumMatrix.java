@@ -1,33 +1,41 @@
 package it.unibo.oop.workers02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * implementation of a class that sums all of the elements of a matrix using the number of number \
+ * of thread passed when created.
+ */
 public class MultiThreadedSumMatrix implements SumMatrix {
     private final int threads;
 
-    MultiThreadedSumMatrix(int threads) {
+    MultiThreadedSumMatrix(final int threads) {
         this.threads = threads;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public double sum(double[][] matrix) {
+    public double sum(final double[][] matrix) {
         final int division = matrix.length % threads + matrix.length / threads;
         final List<Worker> workers = new ArrayList<>();
-        for(int start = 0; start < matrix.length; start += division) {
+        for (int start = 0; start < matrix.length; start += division) {
             workers.add(new Worker(matrix, start, division));
         }
 
-        for(Worker w : workers) {
+        for (final Worker w : workers) {
             w.start();
         }
 
         double sum = 0;
-        for(Worker w : workers) {
+        for (final Worker w : workers) {
             try {
                 w.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (final InterruptedException e) {
+                throw new IllegalStateException(e);
             }
             sum = w.getResult();
         }
@@ -40,18 +48,19 @@ public class MultiThreadedSumMatrix implements SumMatrix {
         private final int end;
         private long result;
 
-        Worker(double[][] m, int start, int division) {
-           matrix = m;
+        Worker(final double[][] m, final int start, final int division) {
+           this.matrix = Arrays.copyOf(m, m.length);
            this.start = start;
            this.end = start + division;
         }
 
         @Override
         public void run() {
-            System.out.println("starting from " + start + " to " + end);
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix[i].length; j++) {
-                    result += matrix[i][j];
+            System.out.println("starting from " + start + " to " + end); // NOPMD
+            // Println used to show the working ranges for debugging purposes
+            for (final double[] array : matrix) {
+                for (final double data : array) {
+                    result += data;
                 }
             }
         }
