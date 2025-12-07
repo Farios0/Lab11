@@ -128,9 +128,9 @@ public final class AnotherConcurrentGUI extends JFrame {
 
     private final class ChronoAgent implements Runnable {
         private static final int TIME_SEC = 10;
-        private Agent agentTocontrol;
+        private final Agent agentTocontrol;
 
-        ChronoAgent(Agent a){
+        ChronoAgent(final Agent a) {
             agentTocontrol = a;
         }
 
@@ -138,8 +138,8 @@ public final class AnotherConcurrentGUI extends JFrame {
         public void run() {
             try {
                 Thread.sleep(TIME_SEC * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (final InterruptedException e) {
+                LOGGER.error(e.getMessage(), e);
             }
             agentTocontrol.stopCounting();
         }
